@@ -5,6 +5,8 @@ const LoginPage =()=>{
     const navigate=useNavigate()
     const [email,setEmail]=useState("")
     const [password,setPassword]=useState("")
+    const [error,setError] = useState("")
+
     const handleLogin= async (e:React.FormEvent)=>{
         e.preventDefault();
         try{
@@ -24,6 +26,10 @@ const LoginPage =()=>{
                 }
             )
             const data = await response.json()
+            if(!response.ok){
+                setError(data.message)
+                return
+            }
             console.log(data)
             localStorage.setItem("token",data.token)
             
@@ -63,7 +69,13 @@ const LoginPage =()=>{
                     }
                     className="w-full border p-3 rounded mb-4"
                 />
-
+                {
+                    error && (
+                        <p className="text-red-500 mb-4 text-sm">
+                            {error}
+                        </p>
+                    )
+                }
                 <button className="w-full bg-black text-white p-3 rounded">
                     Login
                 </button>

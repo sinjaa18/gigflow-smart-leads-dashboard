@@ -8,6 +8,7 @@ const RegisterPage = ()=>{
     const [name,setName] = useState("")
     const [email,setEmail] = useState("")
     const [password,setPassword] = useState("")
+    const [error,setError] = useState("")
 
     const handleRegister = async (
         e:React.FormEvent
@@ -30,14 +31,17 @@ const RegisterPage = ()=>{
                         name,
                         email,
                         password,
-                        role:"admin"
+                        role:"sales"
                     })
                 }
             )
 
             const data =
                 await response.json()
-
+            if(!response.ok){
+                setError(data.message)
+                return
+            }
             localStorage.setItem(
                 "token",
                 data.token

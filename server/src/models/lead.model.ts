@@ -9,11 +9,14 @@ export interface ILead extends Document{
 const leadSchema=new mongoose.Schema<ILead>({
     name:{
         type:String,
-        required:true
+        required:true,
+        trim:true
     },
     email:{
         type:String,
-        required:true
+        required:true,
+        unique:true,
+        trim:true
     },
     status:{
         type:String,

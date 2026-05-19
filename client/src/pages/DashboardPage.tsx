@@ -23,37 +23,47 @@ const DashboardPage = () => {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterSource, setFilterSource] = useState("");
+  const [sort, setSort] = useState("latest");
 
   // Pagination State
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  //Handlers
+  const [error,setError] = useState("")
+  // --- Handlers ---
 
   const createLead = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       const token = localStorage.getItem("token");
-      await fetch(`${import.meta.env.VITE_API_URL}/api/leads`,
-    {
-        method:"POST",
-
-        headers:{
-            Authorization:`Bearer ${token}`,
-            "Content-Type":"application/json"
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/leads`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          name,
+          email,
+          status,
+          source,
+        }),
+      });
 
-        body:JSON.stringify({
-            name,
-            email,
-            status,
-            source
-        })
-    }
-)
+      const data = await response.json();
+      if(!response.ok){
+            setError(data.message)
+            return
+      }
+      console.log(data);
 
       setName("");
       setEmail("");
+      setStatus("New");
+      setSource("Website");
+      setPage(1);
+
       fetchLeads();
     } catch (err) {
       console.log(err);
@@ -65,7 +75,7 @@ const DashboardPage = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/leads?search=${search}&status=${filterStatus}&source=${filterSource}&page=${page}`,
+        `${import.meta.env.VITE_API_URL}/api/leads?search=${search}&status=${filterStatus}&source=${filterSource}&page=${page}&sort=${sort}`,
         {
           method: "GET",
           headers: {
@@ -75,8 +85,13 @@ const DashboardPage = () => {
       );
 
       const data = await response.json();
+      if(!response.ok){
+            setError(data.message)
+            return
+      }
+      setError("")
       setLeads(data.leads || []);
-      setTotalPages(data.pagination.pages);
+      setTotalPages(data.pagination?.pages || 1);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -85,53 +100,98 @@ const DashboardPage = () => {
   };
 
   const deleteLead = async (id: string) => {
+    const confirmDelete = window.confirm("Delete this lead?");
+    if (!confirmDelete) {
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
-      await fetch(`${import.meta.env.VITE_API_URL}/api/leads/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/leads/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      const data = await response.json();
+      if(!response.ok){
+            setError(data.message)
+            return
+      }
       fetchLeads();
     } catch (err) {
       console.log(err);
     }
   };
 
-  // Side effect
+  const exportCSV = () => {
+    const headers = ["Name", "Email", "Status", "Source"];
+
+    const rows = leads.map((lead) => [
+      lead.name,
+      lead.email,
+      lead.status,
+      lead.source,
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.join(",")),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = "leads.csv";
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+  };
+
+  // --- Effects ---
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/";
-    }
-    fetchLeads();
-  }, [search, filterSource, filterStatus, page]);
+    const timer = setTimeout(() => {
+      fetchLeads();
+    }, 500);
 
-  useEffect(() => {
-    setPage(1);
-  }, [search, filterStatus, filterSource]);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, filterStatus, filterSource, page, sort]);
 
-  //Render
+  // --- Render ---
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
         <h1 className="text-4xl font-bold">GigFlow Dashboard</h1>
-        <button
-          onClick={() => {
-            localStorage.removeItem("token");
-            window.location.href = "/";
-          }}
-          className="bg-black text-white px-4 py-2 rounded h-fit hover:bg-gray-800 transition-colors"
-        >
-          Logout
-        </button>
+        <div className="flex gap-4">
+          <button
+            onClick={exportCSV}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors"
+          >
+            Export CSV
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              window.location.href = "/";
+            }}
+            className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded transition-colors"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
-      {/* Add Lead Form */}
+      {error && (
+        <div className="bg-red-100 text-red-600 p-3 rounded mb-4">{error}</div> 
+        )}
+      {/* Create Form */}
       <div className="bg-white rounded-xl shadow p-6 mb-8">
         <h2 className="text-2xl font-semibold mb-6">Add New Lead</h2>
         <form onSubmit={createLead} className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -188,7 +248,7 @@ const DashboardPage = () => {
 
           <button
             type="submit"
-            className="bg-black text-white p-3 w-full md:w-2/3 md:mx-auto rounded md:col-span-2 mt-4 hover:bg-gray-800 transition-colors"
+            className="bg-black hover:bg-gray-800 text-white p-3 rounded md:col-span-2 mt-2 transition-colors"
           >
             Create Lead
           </button>
@@ -227,14 +287,21 @@ const DashboardPage = () => {
           <option value="Instagram">Instagram</option>
           <option value="Referral">Referral</option>
         </select>
+
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          className="border p-3 rounded focus:outline-none focus:ring-2 focus:ring-black"
+        >
+          <option value="latest">Latest</option>
+          <option value="oldest">Oldest</option>
+        </select>
       </div>
 
-      {/* Leads Table */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold">Leads List</h2>
-        {loading && <p className="text-gray-500 font-medium animate-pulse">Loading...</p>}
-      </div>
+      {/* Loading Indicator */}
+      {loading && <p className="mb-4 text-gray-500 font-medium animate-pulse">Loading...</p>}
 
+      {/* Table */}
       <div className="bg-white rounded-xl shadow overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead className="bg-black text-white">
@@ -268,7 +335,7 @@ const DashboardPage = () => {
                 <td className="p-4">
                   <button
                     onClick={() => deleteLead(lead._id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors text-sm"
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition-colors text-sm"
                   >
                     Delete
                   </button>
@@ -281,7 +348,7 @@ const DashboardPage = () => {
 
       {/* Pagination */}
       {totalPages > 0 && (
-        <div className="flex gap-4 justify-center mt-8">
+        <div className="flex gap-4 justify-center mt-6">
           <button
             onClick={() => setPage(page - 1)}
             disabled={page === 1}

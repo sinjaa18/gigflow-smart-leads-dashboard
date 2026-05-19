@@ -22,7 +22,11 @@ export const getLeads = async ( req:Request,  res:Response) => {
     try{
 
         const {status,source,search,sort,page="1"}=req.query
-        const query:any={}
+        const query:{
+            status?:string
+            source?:string
+            $or?:object[]
+        }={}
         if(status){
             query.status=status
         }
@@ -65,6 +69,11 @@ export const getLeads = async ( req:Request,  res:Response) => {
 export const getLead = async ( req:Request,  res:Response) => {
     try{
         const lead = await Lead.findById(req.params.id)
+        if(!lead){
+            return res.status(404).json({
+                message:"Lead not found"
+            })
+        }
         res.status(200).json({
             lead
         })

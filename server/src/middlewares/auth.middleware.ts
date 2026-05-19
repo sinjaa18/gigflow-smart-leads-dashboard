@@ -2,7 +2,6 @@ import { NextFunction,Request,Response } from "express"
 import jwt from "jsonwebtoken"
 
 import User from "../models/user.models"
-import { string } from "zod"
 
 interface JwtPayload {
   userId: string

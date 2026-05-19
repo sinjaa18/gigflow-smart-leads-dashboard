@@ -1,5 +1,6 @@
 import {BrowserRouter,Routes,Route} from "react-router-dom"
 
+import ProtectedRoute from "./components/ProtectedRoute"
 import RegisterPage from "./pages/RegisterPage"
 import LoginPage from "./pages/LoginPage"
 import DashboardPage from "./pages/DashboardPage"
@@ -14,8 +15,12 @@ const App = () => {
         />
 
         <Route
-          path="/dashboard"
-          element={<DashboardPage />}
+            path="/dashboard"
+            element={
+                <ProtectedRoute>
+                    <DashboardPage />
+                </ProtectedRoute>
+            }
         />
         <Route
             path="/register"

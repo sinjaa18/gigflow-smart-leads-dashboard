@@ -7,7 +7,7 @@ import { getLead,getLeads,createLead,updateLead,deleteLead } from "../controller
 const router = express.Router()
 router.get("/",protect,getLeads)
 router.get("/:id",protect,getLead)
-router.post("/",protect,authorize("admin"),createLead)
+router.post("/",protect,authorize("admin","sales"),createLead)
 router.put("/:id",protect,authorize("admin","sales"),updateLead)
 router.delete("/:id",protect,authorize("admin"),deleteLead)
 

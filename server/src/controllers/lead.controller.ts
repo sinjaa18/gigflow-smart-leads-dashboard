@@ -23,15 +23,15 @@ export const getLeads = async (req: Request, res: Response) => {
 
     const query: any = {};
 
-    if (typeof status === "string") {
+    if (typeof status === "string" && status.trim() !== "") {
       query.status = status;
     }
 
-    if (typeof source === "string") {
+    if (typeof source === "string" && source.trim() !== "") {
       query.source = source;
     }
 
-    if (typeof search === "string") {
+    if (typeof search === "string" && search.trim() !== "") {
       query.$or = [
         {
           name: {

@@ -173,14 +173,24 @@ const DashboardPage = () => {
   };
 
   // effects
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchLeads();
-    }, 500);
+  useEffect(()=>{
 
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, filterStatus, filterSource, page, sort, refreshTrigger]);
+    const timer = setTimeout(()=>{
+
+        fetchLeads()
+
+    },500)
+
+    return ()=> clearTimeout(timer)
+
+},[
+    search,
+    filterStatus,
+    filterSource,
+    page,
+    sort,
+    refreshTrigger
+])
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">

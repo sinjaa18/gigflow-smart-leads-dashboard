@@ -20,7 +20,7 @@ const DashboardPage = () => {
     const [filterSource,setFilterSource]=useState("")
     const [page,setPage] = useState(1)
     const [totalPages,setTotalPages] = useState(1)
-
+    const [loading,setLoading] =useState(false)
     //createLeads
     const createLead = async ( e:React.FormEvent)=>{
         e.preventDefault()
@@ -53,6 +53,7 @@ const DashboardPage = () => {
     //fetchLeads
     const fetchLeads = async ()=>{
         try{
+            setLoading(true)
             const token =localStorage.getItem("token")
             const response = await fetch(
                 `http://localhost:5000/api/leads?search=${search}&status=${filterStatus}&source=${filterSource}&page=${page}`,
@@ -67,6 +68,7 @@ const DashboardPage = () => {
             const data =await response.json()
             setLeads(data.leads || [])
             setTotalPages(data.pagination.pages)
+            setLoading(false)
         }catch(err){
             console.log(err)
         }
@@ -88,12 +90,29 @@ const DashboardPage = () => {
             console.log(err)
         }
     }
-    useEffect(()=>{setPage(1)},[search,filterSource,filterStatus,page])
+
+
+    useEffect(()=>{
+        const token = localStorage.getItem("token")
+        if(!token){ window.location.href = "/"}
+        setPage(1)
+        },[search,filterSource,filterStatus,page])
+
+
     return (
         <div className="min-h-screen bg-gray-100 p-6">
             <h1 className="text-4xl font-bold mb-8">
                 GigFlow Dashboard
             </h1>
+            <button
+    onClick={()=>{
+        localStorage.removeItem("token")
+        window.location.href = "/"
+    }}
+    className="bg-black text-white px-4 py-2 rounded"
+>
+    Logout
+</button>
             <div className="bg-white rounded-xl shadow p-6 mb-8">
                 <h2 className="text-2xl font-semibold mb-1">
                     Add New Lead
@@ -182,7 +201,29 @@ const DashboardPage = () => {
             <h2 className="text-2xl font-semibold mb-4">
                 Leads List
             </h2>
-            
+            {
+                loading && (
+                    <p className="mb-4">
+                        Loading...
+                    </p>
+                )
+            }
+            {
+                leads.length === 0 && (
+
+                    <tr>
+
+                        <td
+                            colSpan={5}
+                            className="text-center p-6"
+                        >
+                            No leads found
+                        </td>
+
+                    </tr>
+
+                )
+            }
 
             <div className="flex gap-4 mb-8">
 

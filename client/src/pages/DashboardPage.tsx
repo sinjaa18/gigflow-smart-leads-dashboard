@@ -9,29 +9,28 @@ interface Lead {
 }
 
 const DashboardPage = () => {
-  // Form State
+  // form state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("New");
   const [source, setSource] = useState("Website");
 
-  // Data State
+  // data state
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Filter State
+  // filter state
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterSource, setFilterSource] = useState("");
   const [sort, setSort] = useState("latest");
 
-  // Pagination State
+  // pagination state
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const [error,setError] = useState("")
-  // --- Handlers ---
-
+  // create lead
   const createLead = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -52,27 +51,38 @@ const DashboardPage = () => {
       });
 
       const data = await response.json();
-      if(!response.ok){
-            setError(data.message)
-            return
+
+      if (!response.ok) {
+        setError(data.message);
+        return;
       }
-      console.log(data);
 
       setName("");
       setEmail("");
       setStatus("New");
       setSource("Website");
+
+      setSearch("");
+      setFilterStatus("");
+      setFilterSource("");
+
       setPage(1);
 
-      fetchLeads();
+      setLeads((prev) => [data.lead, ...prev]);
+
+      setError("");
+
+      await fetchLeads();
     } catch (err) {
       console.log(err);
     }
   };
 
+  // fetch leads
   const fetchLeads = async () => {
     try {
       setLoading(true);
+
       const token = localStorage.getItem("token");
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/leads?search=${search}&status=${filterStatus}&source=${filterSource}&page=${page}&sort=${sort}`,
@@ -85,11 +95,14 @@ const DashboardPage = () => {
       );
 
       const data = await response.json();
-      if(!response.ok){
-            setError(data.message)
-            return
+
+      if (!response.ok) {
+        setError(data.message);
+        setLoading(false);
+        return;
       }
-      setError("")
+
+      setError("");
       setLeads(data.leads || []);
       setTotalPages(data.pagination?.pages || 1);
       setLoading(false);
@@ -99,32 +112,41 @@ const DashboardPage = () => {
     }
   };
 
+  // delete lead
   const deleteLead = async (id: string) => {
     const confirmDelete = window.confirm("Delete this lead?");
+
     if (!confirmDelete) {
       return;
     }
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/leads/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/leads/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const data = await response.json();
-      if(!response.ok){
-            setError(data.message)
-            return
+
+      if (!response.ok) {
+        setError(data.message);
+        return;
       }
-      fetchLeads();
+
+      setError("");
+      await fetchLeads();
     } catch (err) {
       console.log(err);
     }
   };
 
+  // export csv
   const exportCSV = () => {
     const headers = ["Name", "Email", "Status", "Source"];
 
@@ -151,8 +173,7 @@ const DashboardPage = () => {
     window.URL.revokeObjectURL(url);
   };
 
-  // --- Effects ---
-
+  // effects
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchLeads();
@@ -162,13 +183,12 @@ const DashboardPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, filterStatus, filterSource, page, sort]);
 
-  // --- Render ---
-
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      {/* Header */}
+      {/* header */}
       <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
         <h1 className="text-4xl font-bold">GigFlow Dashboard</h1>
+
         <div className="flex gap-4">
           <button
             onClick={exportCSV}
@@ -176,6 +196,7 @@ const DashboardPage = () => {
           >
             Export CSV
           </button>
+
           <button
             onClick={() => {
               localStorage.removeItem("token");
@@ -188,13 +209,21 @@ const DashboardPage = () => {
         </div>
       </div>
 
+      {/* error */}
       {error && (
-        <div className="bg-red-100 text-red-600 p-3 rounded mb-4">{error}</div> 
-        )}
-      {/* Create Form */}
+        <div className="bg-red-100 text-red-600 p-3 rounded mb-4">
+          {error}
+        </div>
+      )}
+
+      {/* create form */}
       <div className="bg-white rounded-xl shadow p-6 mb-8">
         <h2 className="text-2xl font-semibold mb-6">Add New Lead</h2>
-        <form onSubmit={createLead} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <form
+          onSubmit={createLead}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
           <div>
             <label className="block mb-2 font-medium">Name</label>
             <input
@@ -255,7 +284,7 @@ const DashboardPage = () => {
         </form>
       </div>
 
-      {/* Filters */}
+      {/* filters */}
       <div className="flex flex-wrap gap-4 mb-8">
         <input
           type="text"
@@ -298,10 +327,14 @@ const DashboardPage = () => {
         </select>
       </div>
 
-      {/* Loading Indicator */}
-      {loading && <p className="mb-4 text-gray-500 font-medium animate-pulse">Loading...</p>}
+      {/* loading */}
+      {loading && (
+        <p className="mb-4 text-gray-500 font-medium animate-pulse">
+          Loading...
+        </p>
+      )}
 
-      {/* Table */}
+      {/* table */}
       <div className="bg-white rounded-xl shadow overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead className="bg-black text-white">
@@ -323,7 +356,10 @@ const DashboardPage = () => {
             )}
 
             {leads.map((lead) => (
-              <tr key={lead._id} className="border-b hover:bg-gray-50 transition-colors">
+              <tr
+                key={lead._id}
+                className="border-b hover:bg-gray-50 transition-colors"
+              >
                 <td className="p-4">{lead.name}</td>
                 <td className="p-4 text-gray-600">{lead.email}</td>
                 <td className="p-4">
@@ -346,7 +382,7 @@ const DashboardPage = () => {
         </table>
       </div>
 
-      {/* Pagination */}
+      {/* pagination */}
       {totalPages > 0 && (
         <div className="flex gap-4 justify-center mt-6">
           <button

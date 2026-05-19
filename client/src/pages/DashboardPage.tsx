@@ -34,14 +34,23 @@ const DashboardPage = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await fetch("http://localhost:5000/api/leads", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      await fetch(`${import.meta.env.VITE_API_URL}/api/leads`,
+    {
+        method:"POST",
+
+        headers:{
+            Authorization:`Bearer ${token}`,
+            "Content-Type":"application/json"
         },
-        body: JSON.stringify({ name, email, status, source }),
-      });
+
+        body:JSON.stringify({
+            name,
+            email,
+            status,
+            source
+        })
+    }
+)
 
       setName("");
       setEmail("");
@@ -56,7 +65,7 @@ const DashboardPage = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:5000/api/leads?search=${search}&status=${filterStatus}&source=${filterSource}&page=${page}`,
+        `${import.meta.env.VITE_API_URL}/api/leads?search=${search}&status=${filterStatus}&source=${filterSource}&page=${page}`,
         {
           method: "GET",
           headers: {
@@ -78,7 +87,7 @@ const DashboardPage = () => {
   const deleteLead = async (id: string) => {
     try {
       const token = localStorage.getItem("token");
-      await fetch(`http://localhost:5000/api/leads/${id}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/leads/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

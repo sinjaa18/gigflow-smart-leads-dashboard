@@ -69,9 +69,13 @@ const RegisterPage = ()=>{
                 <h1 className="text-3xl font-bold mb-6 text-center">
                     Register
                 </h1>
-
-
-
+                {
+                    error && (
+                        <p className="text-red-500 mb-4 text-sm">
+                            {error}
+                        </p>
+                    )
+                }
                 <input
                     type="text"
                     placeholder="Name"

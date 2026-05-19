@@ -19,6 +19,7 @@ const DashboardPage = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // filter state
   const [search, setSearch] = useState("");
@@ -65,14 +66,11 @@ const DashboardPage = () => {
       setSearch("");
       setFilterStatus("");
       setFilterSource("");
-
       setPage(1);
-
-      setLeads((prev) => [data.lead, ...prev]);
-
       setError("");
 
-      await fetchLeads();
+      // Trigger the useEffect to fetch leads with the freshly reset state above
+      setRefreshTrigger((prev) => prev + 1);
     } catch (err) {
       console.log(err);
     }
@@ -140,7 +138,8 @@ const DashboardPage = () => {
       }
 
       setError("");
-      await fetchLeads();
+      // Trigger a refetch after deletion
+      setRefreshTrigger((prev) => prev + 1);
     } catch (err) {
       console.log(err);
     }
@@ -181,7 +180,7 @@ const DashboardPage = () => {
 
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, filterStatus, filterSource, page, sort]);
+  }, [search, filterStatus, filterSource, page, sort, refreshTrigger]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">

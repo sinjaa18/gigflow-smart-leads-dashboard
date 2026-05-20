@@ -80,14 +80,11 @@ GigFlow enables teams to securely manage leads, authenticate users, apply advanc
 ---
 # 📸 Screenshots
 
-## 🔐 Login Page
-
-Clean and responsive JWT authentication interface.
-
-```md
 ![Login](screenshots/Login.png)
 ![Register](screenshots/Register.png)
 ![Dashboard](screenshots/DashBoard.png)
+
+---
 
 # 🛠️ Tech Stack
 

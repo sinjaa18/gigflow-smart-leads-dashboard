@@ -1,44 +1,18 @@
+
+---
+
 # 🚀 GigFlow – Smart Leads Dashboard
 
-![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat&logo=mongodb&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=flat\&logo=react\&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat\&logo=typescript\&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat\&logo=node.js\&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat\&logo=mongodb\&logoColor=white)
 ![JWT](https://img.shields.io/badge/Auth-JWT-orange)
 ![License](https://img.shields.io/badge/license-MIT-yellow)
 
 A full-stack lead management dashboard built using the MERN stack.
 
-GigFlow enables teams to securely manage leads, authenticate users, apply advanced filtering, search records, and perform role-based operations through a clean and responsive dashboard interface.
-
----
-
-# ✨ Highlights
-
-- Secure JWT Authentication
-- Role-Based Access Control
-- Lead CRUD Operations
-- Search & Filtering
-- Pagination Support
-- Protected Routes
-- Fully Responsive UI
-- REST API Architecture
-
----
-
-# 📑 Table of Contents
-
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Architecture](#-architecture)
-- [Screenshots](#-screenshots)
-- [Folder Structure](#-folder-structure)
-- [Environment Variables](#-environment-variables)
-- [Installation & Setup](#-installation--setup)
-- [API Endpoints](#-api-endpoints)
-- [Filtering & Search](#-filtering--search)
-- [Future Improvements](#-future-improvements)
-- [Author](#-author)
+GigFlow enables teams to securely manage leads, authenticate users, apply advanced filtering, pagination, CSV export, and perform role-based operations through a clean and responsive dashboard interface.
 
 ---
 
@@ -46,87 +20,96 @@ GigFlow enables teams to securely manage leads, authenticate users, apply advanc
 
 ## Frontend
 
-```txt
-https://your-frontend.vercel.app
-```
+[GigFlow Frontend](https://gigflow-smart-leads-dashboard-lake.vercel.app/)
 
-## Backend
+## Backend API
 
-```txt
-https://your-backend.onrender.com
-```
+[GigFlow Backend API](https://gigflow-smart-leads-dashboard-4ybk.onrender.com/)
 
 ---
 
-# 🚀 Features
+# ✨ Features
 
 ## 🔐 Authentication
 
-- User Registration
-- User Login
-- JWT-based Authentication
-- Protected Routes
-- Persistent Sessions
+* User Registration
+* User Login
+* JWT Authentication
+* Protected Routes
+* Persistent Login Sessions
 
 ---
 
 ## 👥 Role-Based Access Control
 
-### Admin Access
+### Admin
 
-- Create Leads
-- View Leads
-- Delete Leads
-- Manage System Data
+* Create Leads
+* Update Leads
+* Delete Leads
+* View Leads
 
-### Sales Access
+### Sales
 
-- View Leads
-- Update Leads
-- Manage Assigned Leads
+* View Leads Only
 
 ---
 
 ## 📋 Lead Management
 
-- Create Leads
-- View Leads
-- Delete Leads
-- Search Leads
-- Filter Leads
-- Pagination Support
+* Create Leads
+* Update Leads
+* Delete Leads
+* View Single Lead Details
+* Search Leads
+* Filter Leads
+* Sort Leads
+* Pagination Support
 
 ---
 
-## 🔎 Search & Filters
+## ⚡ Additional Features
 
-- Search by lead name/email
-- Filter by lead status
-- Filter by lead source
-- Paginated lead listing
+* Debounced Search
+* CSV Export
+* Responsive Dashboard UI
+* Loading & Empty States
+* Zod Validation
+* Docker Support
 
 ---
+# 📸 Screenshots
+
+## 🔐 Login Page
+
+Clean and responsive JWT authentication interface.
+
+```md
+![Login](screenshots/Login.png)
+![Register](screenshots/Register.png)
+![Dashboard](screenshots/DashBoard.png)
 
 # 🛠️ Tech Stack
 
 ## Frontend
 
-- React
-- TypeScript
-- Tailwind CSS
-- React Router DOM
-- Axios
+* React
+* TypeScript
+* Tailwind CSS
+* React Router DOM
+* Vite
 
 ---
 
 ## Backend
 
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- JWT Authentication
-- bcryptjs
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* JWT Authentication
+* bcryptjs
+* Zod
 
 ---
 
@@ -135,32 +118,30 @@ https://your-backend.onrender.com
 GigFlow follows a modern client-server architecture.
 
 ```text
-Client (React + TS)
-        │
-        ▼
+Client (React + TypeScript)
+            │
+            ▼
 REST API (Express.js)
-        │
-        ▼
+            │
+            ▼
 MongoDB Database
 ```
 
-Authentication flow:
+Authentication Flow:
 
 ```text
 User Login
-    │
-    ▼
+     │
+     ▼
 JWT Token Generated
-    │
-    ▼
+     │
+     ▼
 Protected API Requests
 ```
 
 ---
 
 # 📦 Lead Schema
-
-Each lead contains:
 
 ```json
 {
@@ -173,90 +154,60 @@ Each lead contains:
 
 ---
 
-# 📸 Screenshots
-
-## 🔐 Login Page
-
-Add login page screenshot here.
-
-```md
-![Login Page](screenshots/login.png)
-```
-
----
-
-## 📊 Dashboard
-
-Add dashboard screenshot here.
-
-```md
-![Dashboard](screenshots/dashboard.png)
-```
-
----
-
-## 📋 Leads Table
-
-Add leads table screenshot here.
-
-```md
-![Leads Table](screenshots/leads-table.png)
-```
-
----
-
 # 📂 Folder Structure
 
 ```text
-gigflow/
+gigflow-smart-leads-dashboard/
 │
 ├── client/
 │   ├── src/
-│   ├── pages/
-│   ├── components/
-│   ├── hooks/
-│   ├── context/
-│   └── ...
+│   │   ├── pages/
+│   │   ├── components/
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   └── Dockerfile
 │
 ├── server/
 │   ├── src/
-│   ├── controllers/
-│   ├── routes/
-│   ├── middlewares/
-│   ├── models/
-│   ├── utils/
-│   └── ...
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── validators/
+│   │   └── utils/
+│   └── Dockerfile
 │
-├── screenshots/
-│   ├── login.png
-│   ├── dashboard.png
-│   └── leads-table.png
-│
-├── README.md
-└── package.json
+├── docker-compose.yml
+└── README.md
 ```
 
 ---
 
 # 🔑 Environment Variables
 
-Create a `.env` file inside the `server` directory.
-
-## Example
+## Backend `.env`
 
 ```env
 PORT=5000
 
-MONGO_URI=your_mongodb_connection_string
+MONGO_URI=your_mongodb_uri
 
-JWT_SECRET=your_secret_key
+JWT_SECRET=your_jwt_secret
+```
+
+---
+
+## Frontend `.env`
+
+```env
+VITE_API_URL=http://localhost:5000
 ```
 
 ---
 
 # ⚙️ Installation & Setup
 
-## 1️⃣ Clone Repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/sinjaa18/gigflow-smart-leads-dashboard.git
@@ -286,7 +237,7 @@ http://localhost:5000
 
 # 💻 Frontend Setup
 
-Open a new terminal:
+Open another terminal:
 
 ```bash
 cd client
@@ -304,9 +255,31 @@ http://localhost:5173
 
 ---
 
+# 🐳 Docker Setup
+
+Run the full project using Docker:
+
+```bash
+docker-compose up --build
+```
+
+Frontend:
+
+```txt
+http://localhost:5173
+```
+
+Backend:
+
+```txt
+http://localhost:5000
+```
+
+---
+
 # 📡 API Endpoints
 
-## 🔐 Authentication Routes
+## 🔐 Auth Routes
 
 ### Register User
 
@@ -324,10 +297,16 @@ POST /api/auth/login
 
 ## 📋 Lead Routes
 
-### Get Leads
+### Get All Leads
 
 ```http
 GET /api/leads
+```
+
+### Get Single Lead
+
+```http
+GET /api/leads/:id
 ```
 
 ### Create Lead
@@ -336,16 +315,16 @@ GET /api/leads
 POST /api/leads
 ```
 
+### Update Lead
+
+```http
+PUT /api/leads/:id
+```
+
 ### Delete Lead
 
 ```http
 DELETE /api/leads/:id
-```
-
-### Update Lead
-
-```http
-PATCH /api/leads/:id
 ```
 
 ---
@@ -358,23 +337,17 @@ PATCH /api/leads/:id
 /api/leads?search=rahul
 ```
 
----
-
 ## Filter by Status
 
 ```txt
 /api/leads?status=Qualified
 ```
 
----
-
 ## Filter by Source
 
 ```txt
 /api/leads?source=Instagram
 ```
-
----
 
 ## Pagination
 
@@ -386,26 +359,24 @@ PATCH /api/leads/:id
 
 # 🔒 Security Features
 
-- Password hashing using bcryptjs
-- JWT authentication middleware
-- Protected backend routes
-- Role-based authorization
-- Input validation
-- Secure API architecture
+* Password Hashing using bcryptjs
+* JWT Authentication Middleware
+* Protected Backend Routes
+* Role-Based Authorization
+* Zod Request Validation
+* Secure REST API Architecture
 
 ---
 
 # 🚀 Future Improvements
 
-- [ ] Dashboard Analytics
-- [ ] CSV Export
-- [ ] Dark Mode
-- [ ] Activity Logs
-- [ ] Lead Assignment System
-- [ ] Email Notifications
-- [ ] Drag & Drop Kanban Board
-- [ ] Real-time Updates
-- [ ] Advanced Charts & Insights
+* Dashboard Analytics
+* Dark Mode
+* Activity Logs
+* Lead Assignment System
+* Email Notifications
+* Real-time Updates
+* Advanced Charts & Insights
 
 ---
 
@@ -413,15 +384,15 @@ PATCH /api/leads/:id
 
 This project demonstrates understanding of:
 
-- Full-stack MERN architecture
-- Authentication & Authorization
-- REST API design
-- MongoDB schema modeling
-- Protected routing
-- State management
-- Pagination & filtering
-- Role-based systems
-- Clean frontend-backend separation
+* Full-stack MERN architecture
+* Authentication & Authorization
+* REST API design
+* MongoDB schema modeling
+* Protected routing
+* Pagination & filtering
+* Role-based systems
+* TypeScript backend/frontend integration
+* Dockerized application setup
 
 ---
 
@@ -429,9 +400,15 @@ This project demonstrates understanding of:
 
 ## Sintu Kumar
 
-- 📧 Email: santa143ns@gmail.com
-- 💼 LinkedIn: https://www.linkedin.com/in/sintu-kumar-83350b324/
-- 🐙 GitHub: https://github.com/sinjaa18/
+📧 Email: [santa143ns@gmail.com](mailto:santa143ns@gmail.com)
+
+GitHub:
+
+[sinjaa18 GitHub](https://github.com/sinjaa18)
+
+LinkedIn:
+
+[Sintu Kumar LinkedIn](https://www.linkedin.com/in/sintu-kumar-83350b324)
 
 ---
 
